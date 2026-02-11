@@ -1,0 +1,24 @@
+# Created by venv; see https://docs.python.org/3/library/venv.html
+# Environment
+.env
+env/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Database
+db.sqlite3
+
+# Node
+node_modules/
+
+# FAISS / ML files
+*.bin
+*.pt
+*.pth
+
+# VS Code
+.vscode/
