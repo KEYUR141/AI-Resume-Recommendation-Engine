@@ -168,3 +168,23 @@ class InternshipViewSet(viewsets.ModelViewSet):
             'source': source,
             'recommendations': recommendations
         })
+    
+    def recommend_internships_by_llm(self, request):
+        try:
+            from app.RAG.recommender import recommend_internships_by_llm, recommend_internships_engine
+            unique_matched_internships = recommend_internships_engine(request.data.get('resume_text', ''))
+            if not unique_matched_internships:
+                return Response({
+                    'status': False,
+                    'error': 'No matched internships to provide to LLM for recommendation.'
+                }, status=400)
+            result = recommend_internships_by_llm(unique_matched_internships)
+            return Response({
+                'status': True,
+                'result': result
+            })
+        except Exception as e:
+            return Response({
+                'status': False,
+                'error': f'Error in recommendation engine: {str(e)}'
+            }, status=500)

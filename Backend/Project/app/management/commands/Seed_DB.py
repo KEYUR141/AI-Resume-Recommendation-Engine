@@ -6,7 +6,7 @@ class Command(BaseCommand):
     help = 'Seed the database with internship data from Excel'
 
     def handle(self, *args, **kwargs):
-        df = pd.read_excel(r'D:\Django_Python_Practice\SIH_Hackathon\Backend\Project\Sample_Internship_Listings_Updated.xlsx')
+        df = pd.read_excel(r'D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\Sample_Internship_Listings_Updated.xlsx')
         print("Excel columns:", list(df.columns))
         for _, row in df.iterrows():
             Internship.objects.create(

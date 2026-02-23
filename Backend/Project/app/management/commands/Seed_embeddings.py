@@ -13,12 +13,20 @@ class Command(BaseCommand):
         for internship in internships:
             doc = f"{internship.position} {internship.role} {internship.industry} {internship.company} {internship.location} {internship.skills} {internship.qualifications} {internship.stipend} {internship.duration} {internship.description}"
             docs.append(doc)
+        if not docs:
+            self.stdout.write(self.style.WARNING("No internship data found. Exiting without creating embeddings."))
+            return
+
 
         #Load Embeddings
         from sentence_transformers import SentenceTransformer
         model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 
-        #Convert Docs to Embeddings
+        embeddings = model.encode(docs)
+        print(f"Embeddings shape: {getattr(embeddings, 'shape', 'No shape attribute')}")
+        if len(embeddings.shape) != 2:
+            self.stdout.write(self.style.ERROR(f"Embeddings shape is not 2D: {embeddings.shape}. Exiting."))
+            return
         embeddings = model.encode(docs)
 
         # Create Fiass Index
@@ -28,11 +36,11 @@ class Command(BaseCommand):
         index.add(np.array(embeddings).astype('float32'))
 
 
-        faiss.write_index(index, r'D:\Django_Python_Practice\SIH_Hackathon\Backend\Project\app\RAG\faiss_index.bin')
+        faiss.write_index(index, r'D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\app\RAG\faiss_index.bin')
 
         #Save MetaData(JSON)
 
         import json
         uuids = [str(internship.uuid)for internship in internships]
-        with open(r'D:\Django_Python_Practice\SIH_Hackathon\Backend\Project\app\RAG\metadata.json', 'w') as f:
+        with open(r'D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\app\RAG\metadata.json', 'w') as f:
             json.dump(uuids, f)
