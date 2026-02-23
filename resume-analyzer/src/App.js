@@ -1,23 +1,20 @@
-import logo from './logo.svg';
+
 import './App.css';
+import React, { useState } from 'react';
+import InternshipList from './components/InternshipList';
+import ResumeRecommendation from './components/ResumeRecommendation';
 
 function App() {
+  const [page, setPage] = useState('list');
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <nav style={{ marginBottom: 20 }}>
+        <button onClick={() => setPage('list')}>Internships List</button>
+        <button onClick={() => setPage('recommend')}>Resume Recommendation</button>
+      </nav>
+      {page === 'list' && <InternshipList />}
+      {page === 'recommend' && <ResumeRecommendation />}
     </div>
   );
 }

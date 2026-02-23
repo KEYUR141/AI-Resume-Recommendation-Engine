@@ -105,7 +105,7 @@ class InternshipViewSet(viewsets.ModelViewSet):
    
 
     @action(detail=False, methods=['get'])
-    def get(self, request):
+    def get_internships(self, request):
         try:
             internships = self.queryset
             serializer = self.serializer_class(internships, many=True)
