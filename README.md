@@ -1,18 +1,24 @@
+
 <div align="center">
-	<h1>AI Resume Recommendation Engine</h1>
-	<p>Empowering job seekers and recruiters with intelligent resume analysis and recommendations.</p>
-  
-	<!-- Tech Badges -->
-	<p>
-		<img src="https://img.shields.io/badge/Python-3.11-blue?logo=python" alt="Python"/>
-		<img src="https://img.shields.io/badge/Django-6.0-green?logo=django" alt="Django"/>
-		<img src="https://img.shields.io/badge/DRF-3.16.1-red?logo=django" alt="Django REST Framework"/>
-		<img src="https://img.shields.io/badge/React-18-blue?logo=react" alt="React"/>
-		<img src="https://img.shields.io/badge/FAISS-1.13.2-yellow?logo=python" alt="FAISS"/>
-		<img src="https://img.shields.io/badge/SQLite-3-lightgrey?logo=sqlite" alt="SQLite"/>
-		<img src="https://img.shields.io/badge/REST%20API-OpenAPI-brightgreen" alt="REST API"/>
-	</p>
+  <h1>AI Resume Recommendation Engine</h1>
+  <p>Empowering job seekers and recruiters with intelligent resume analysis and recommendations.</p>
 </div>
+
+---
+
+## 🛠️ Technologies Used
+
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![Django](https://img.shields.io/badge/django-092E20?style=for-the-badge&logo=django&logoColor=white)
+![Django REST Framework](https://img.shields.io/badge/DRF-3.16.1-red?style=for-the-badge&logo=django&logoColor=white)
+![FAISS](https://img.shields.io/badge/FAISS-00ADD8?style=for-the-badge&logo=meta&logoColor=white)
+![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)
+![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)
+![Transformers](https://img.shields.io/badge/🤗%20Transformers-FFD21E?style=for-the-badge&logoColor=black)
+![SQLite](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white)
+![React](https://img.shields.io/badge/React-18-blue?style=for-the-badge&logo=react&logoColor=white)
+![REST API](https://img.shields.io/badge/REST%20API-OpenAPI-brightgreen?style=for-the-badge)
+
 
 ---
 
