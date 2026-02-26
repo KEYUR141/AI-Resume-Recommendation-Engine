@@ -11,7 +11,7 @@ class Command(BaseCommand):
         for _, row in df.iterrows():
             Internship.objects.create(
                 role=row['Internship Role'],
-                # industry='',  # No 'Industry' column in Excel
+                #industry='',  # No 'Industry' column in Excel
                 company=row['Hiring Company'],
                 location=row['Location'],
                 skills=row['Required Skills'],

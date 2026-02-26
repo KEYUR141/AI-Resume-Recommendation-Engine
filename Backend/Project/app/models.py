@@ -28,7 +28,7 @@ class UserProfile(BaseModel):
 class Internship(BaseModel):
     position = models.CharField(max_length=100)
     role = models.CharField(max_length=100)
-    industry = models.CharField(max_length=50)
+    #industry = models.CharField(max_length=50)
     company = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
     skills = models.TextField()

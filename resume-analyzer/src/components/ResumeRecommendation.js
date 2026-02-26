@@ -1,11 +1,13 @@
 
 import React, { useState } from 'react';
 import { uploadResume } from '../api';
+import { useTheme } from '../contexts/ThemeContext';
 
 const ResumeRecommendation = ({ onRecommend }) => {
   const [file, setFile] = useState(null);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { isDark } = useTheme();
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -29,18 +31,149 @@ const ResumeRecommendation = ({ onRecommend }) => {
   };
 
   return (
-    <div>
-      <h2>Resume Upload & Recommendation</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="file" accept=".pdf,.doc,.docx" onChange={handleFileChange} />
-        <button type="submit" disabled={loading}>{loading ? 'Uploading...' : 'Get Recommendation'}</button>
-      </form>
-      {result && (
-        <div style={{ marginTop: 20 }}>
-          <h3>Recommendation Result</h3>
-          <pre>{JSON.stringify(result, null, 2)}</pre>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Resume Analysis & Recommendations</h2>
+          <p className="text-gray-600">Upload your resume to get personalized internship matches powered by AI</p>
         </div>
-      )}
+        
+        <div className="internship-card max-w-3xl mx-auto">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-lg font-semibold text-gray-700 mb-4">
+                📄 Upload Your Resume
+              </label>
+              
+              <div className="file-input">
+                <input 
+                  id="resume-upload"
+                  type="file" 
+                  accept=".pdf,.doc,.docx" 
+                  onChange={handleFileChange}
+                  disabled={loading}
+                />
+                <label 
+                  htmlFor="resume-upload" 
+                  className={`file-input-label ${file ? 'has-file' : ''}`}
+                >
+                  {file ? (
+                    <>
+                      <div className="upload-icon">✅</div>
+                      <div className="upload-text">File Selected: {file.name}</div>
+                      <div className="upload-subtext">Click to change file</div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="upload-icon">📎</div>
+                      <div className="upload-text">Click to upload your resume</div>
+                      <div className="upload-subtext">PDF, DOC, DOCX files supported • Max 10MB</div>
+                    </>
+                  )}
+                </label>
+              </div>
+            </div>
+            
+            {loading && (
+              <div className="progress-container">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium text-gray-700">Analyzing resume...</span>
+                  <span className="text-sm text-gray-500">🤖 AI Processing</span>
+                </div>
+                <div className="progress-bar">
+                  <div className="progress-fill" style={{width: '70%'}}></div>
+                </div>
+              </div>
+            )}
+            
+            <button 
+              type="submit" 
+              disabled={loading || !file}
+              className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-lg py-3"
+            >
+              {loading ? (
+                <>
+                  <div className="spinner animate-spin mr-3" style={{width: '1.5rem', height: '1.5rem'}}></div>
+                  Analyzing Your Resume...
+                </>
+              ) : (
+                <>
+                  🎯 Get AI Recommendations
+                </>
+              )}
+            </button>
+          </form>
+          
+          {result && (
+            <div className="mt-8">
+              {result.error ? (
+                <div className="error-card">
+                  <div className="flex items-center mb-3">
+                    <div className="text-2xl mr-3">❌</div>
+                    <h3 className="text-lg font-semibold">Analysis Failed</h3>
+                  </div>
+                  <p className="text-sm">{result.error}</p>
+                </div>
+              ) : (
+                <div className="success-card">
+                  <div className="flex items-center mb-4">
+                    <div className="text-2xl mr-3">🎉</div>
+                    <h3 className="text-xl font-semibold">Analysis Complete!</h3>
+                  </div>
+                  
+                  {result.recommendations && result.recommendations.length > 0 ? (
+                    <div>
+                      <p className="mb-4 text-sm opacity-90">
+                        Found {result.recommendations.length} matching internships based on your skills and experience:
+                      </p>
+                      <div className="recommendation-grid">
+                        {result.recommendations.slice(0, 6).map((rec, index) => (
+                          <div key={index} className="recommendation-item">
+                            <h4 className="font-semibold text-gray-900 mb-1">{rec.position || rec.role}</h4>
+                            <p className="text-sm text-gray-600 mb-2">{rec.company}</p>
+                            {rec.match_score && (
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs text-gray-500">Match Score:</span>
+                                <span className="text-xs font-medium text-green-600">{Math.round(rec.match_score * 100)}%</span>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-white rounded-lg p-4 border border-green-100 mt-4">
+                      <h4 className="font-medium text-gray-800 mb-2">Raw Response:</h4>
+                      <pre className="text-xs text-gray-600 whitespace-pre-wrap overflow-auto max-h-64">
+                        {JSON.stringify(result, null, 2)}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+        
+        {/* Features section */}
+        <div className="mt-12 grid md:grid-cols-3 gap-6">
+          <div className="text-center internship-card">
+            <div className="text-3xl mb-3">🤖</div>
+            <h3 className="font-semibold text-gray-900 mb-2">AI-Powered Analysis</h3>
+            <p className="text-sm text-gray-600">Advanced machine learning algorithms analyze your resume for the best matches</p>
+          </div>
+          <div className="text-center internship-card">
+            <div className="text-3xl mb-3">⚡</div>
+            <h3 className="font-semibold text-gray-900 mb-2">Instant Results</h3>
+            <p className="text-sm text-gray-600">Get personalized internship recommendations in seconds, not hours</p>
+          </div>
+          <div className="text-center internship-card">
+            <div className="text-3xl mb-3">🎯</div>
+            <h3 className="font-semibold text-gray-900 mb-2">Perfect Matches</h3>
+            <p className="text-sm text-gray-600">Find internships that align perfectly with your skills and career goals</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
