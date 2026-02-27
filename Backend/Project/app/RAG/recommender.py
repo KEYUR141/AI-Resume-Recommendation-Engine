@@ -6,6 +6,7 @@ import json
 from app.models import Internship
 import os
 from groq import Groq
+from app.RAG.faiss_manager import faiss_manager
 
 API_KEY_GROQ = os.getenv('API_KEY_GROQ')
 #load embedded data
@@ -16,43 +17,71 @@ with open(r'D:\Django_Python_Practice\SIH_Hackathon\Backend\Project\app\RAG\meta
 
 
 
+# def recommend_internships_engine(resume_text, top_k=5):
+#     try:
+#     #Load Resume embeddings
+#         model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+#         resume_embedding = model.encode([resume_text]).astype('float32')
+
+#         #Search in Faiss Index
+#         distances, indices = faiss_index.search(resume_embedding, top_k)
+
+#         #Fetch Metadata
+#         unique_recommended_uuids = list(dict.fromkeys([metadata[idx] for idx in indices[0]]))
+#         matched_internships = Internship.objects.filter(uuid__in=unique_recommended_uuids)
+        
+#         unique_matched_internships = []
+#         seen_uuids = set()
+#         for internship in matched_internships:
+#             if str(internship.uuid) not in seen_uuids:
+#                 unique_matched_internships.append({
+#                     'uuid': str(internship.uuid),
+#                     'position': internship.position,
+#                     'role': internship.role,
+#                     'industry': internship.industry,
+#                     'company': internship.company,
+#                     'location': internship.location,
+#                     'skills': internship.skills,
+#                     'qualifications': internship.qualifications,
+#                     'stipend': internship.stipend,
+#                     'duration': internship.duration,
+#                     'description': internship.description
+#                 })
+#                 seen_uuids.add(str(internship.uuid))
+
+        
+#         return unique_matched_internships
+#     except Exception as e:
+#         return f"Error in recommendation engine: {str(e)}"
+
 def recommend_internships_engine(resume_text, top_k=5):
     try:
-    #Load Resume embeddings
+        #load resume embeddings
         model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
-        resume_embedding = model.encode([resume_text]).astype('float32')
+        resume_embedding = model.encode(resume_text).tolist()
 
-        #Search in Faiss Index
-        distances, indices = faiss_index.search(resume_embedding, top_k)
+        matched_uuids = faiss_manager.search(resume_embedding, top_k)
 
-        #Fetch Metadata
-        unique_recommended_uuids = list(dict.fromkeys([metadata[idx] for idx in indices[0]]))
-        matched_internships = Internship.objects.filter(uuid__in=unique_recommended_uuids)
-        
-        unique_matched_internships = []
-        seen_uuids = set()
+        #fetch from db
+        matched_internships = Internship.objects.filter(uuid__in=matched_uuids)
+
+        results = []
         for internship in matched_internships:
-            if str(internship.uuid) not in seen_uuids:
-                unique_matched_internships.append({
-                    'uuid': str(internship.uuid),
-                    'position': internship.position,
-                    'role': internship.role,
-                    'industry': internship.industry,
-                    'company': internship.company,
-                    'location': internship.location,
-                    'skills': internship.skills,
-                    'qualifications': internship.qualifications,
-                    'stipend': internship.stipend,
-                    'duration': internship.duration,
-                    'description': internship.description
-                })
-                seen_uuids.add(str(internship.uuid))
-
-        
-        return unique_matched_internships
+            results.append({
+                'uuid': str(internship.uuid),
+                'position': internship.position,
+                'role': internship.role,
+                'company': internship.company,
+                'location': internship.location,
+                'skills': internship.skills,
+                'qualifications': internship.qualifications,
+                'stipend': internship.stipend,
+                'duration': internship.duration,
+                'description': internship.description
+            })
+        return results
     except Exception as e:
-        return f"Error in recommendation engine: {str(e)}"
-
+         return f"Error in recommendation engine: {str(e)}"
 
 
 def recommend_internships_by_llm(unique_matched_internships):
