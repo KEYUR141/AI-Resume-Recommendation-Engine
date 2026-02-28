@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Internship, UserProfile
+from .models import Internship, UserProfile, Resume
 from django.http import JsonResponse
 from rest_framework import status, viewsets, permissions
 from rest_framework.decorators import action
@@ -188,3 +188,57 @@ class InternshipViewSet(viewsets.ModelViewSet):
                 'status': False,
                 'error': f'Error in recommendation engine: {str(e)}'
             }, status=500)
+
+from app.tasks import generate_resume_embedding        
+class ResumeViewSet(viewsets.ModelViewSet):
+    queryset = Resume.objects.all()
+    permission_classes = [IsAuthenticated]
+    parse_classes = [MultiPartParser, FormParser]
+
+
+    @action(detail = False, methods =['POST'], url_path = 'upload')
+    def upload_resume(self, request):
+        try:
+            resume_file = request.FILES.get('resume')
+
+            if not resume_file:
+                return Response({
+                    'status': False,
+                    'error': 'No Resume File Provided',
+                }, status=status.HTTP_400_BAD_REQUEST)
+            resume = Resume.objects.create(user=request.user, 
+                    files=resume_file, 
+                    status='pending')
+            
+            generate_resume_embedding.delay(str(resume.uuid))
+            return Response({
+                'status': True,
+                'message': 'Resume uploaded successfully. Processing has started.',
+                'resume_id': str(resume.uuid)
+            }, status=status.HTTP_201_CREATED)      
+        except Exception as e:
+            return Response({
+                'status': False,
+                'error' : f'Error Uploading Resume: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+    @action(detail = False, methods = ['GET'], url_path = 'my_resumes')
+    def get_my_resumes(self,request):
+        try:
+            resumes = self.queryset.filter(user = request.user)
+            return Response({
+                'status': True,
+                'resumes': [
+                    {
+                        'id': resume.uuid,
+                        'file': resume.files.url if resume.files else None,
+                        'status': resume.status,
+                        'created_at': resume.created_at
+                    } for resume in resumes
+                ]
+            })
+        except Exception as e:
+            return Response({
+                'status': False,
+                'error': f'Error Fetching Resumes: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR )
