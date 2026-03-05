@@ -1,0 +1,8 @@
+#For Running the Celery
+celery -A Project worker --loglevel=info --pool=solo
+
+#Django Devepment 
+Python manage.py runserver
+
+#Development React
+npm start

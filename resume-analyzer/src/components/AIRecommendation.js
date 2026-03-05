@@ -206,55 +206,106 @@ const AIRecommendation = () => {
                     <h3 className="text-xl font-semibold">AI Recommendations Ready!</h3>
                   </div>
 
-                  {result.result && Array.isArray(result.result) && result.result.length > 0 ? (
-                    <div>
-                      <p className="mb-4 text-sm opacity-90">
-                        The AI found {result.result.length} curated internship recommendations for you:
-                      </p>
-                      <div className="ai-recommendation-grid">
-                        {result.result.map((rec, index) => (
-                          <div key={index} className="ai-recommendation-card">
-                            <div className="ai-rec-header">
-                              <span className="ai-rec-rank">#{index + 1}</span>
-                              <h4 className="ai-rec-title">{rec.position || rec.role || rec.title}</h4>
-                            </div>
-                            {rec.company && (
-                              <p className="ai-rec-company">🏢 {rec.company}</p>
-                            )}
-                            {rec.location && (
-                              <p className="ai-rec-detail">📍 {rec.location}</p>
-                            )}
-                            {rec.stipend && (
-                              <p className="ai-rec-detail">💰 {rec.stipend}</p>
-                            )}
-                            {rec.reason && (
-                              <div className="ai-rec-reason">
-                                <span className="font-medium text-xs">Why this match:</span>
-                                <p className="text-xs mt-1">{rec.reason}</p>
+                  {(() => {
+                    // The LLM returns inconsistent keys across calls, so we
+                    // dynamically find the array (internships) and text fields (insights)
+                    const data = result.result || result;
+                    
+                    let recs = [];
+                    const insights = [];
+
+                    if (Array.isArray(data)) {
+                      recs = data;
+                    } else if (typeof data === 'object' && data !== null) {
+                      for (const [key, value] of Object.entries(data)) {
+                        if (Array.isArray(value)) {
+                          recs = value;
+                        } else if (typeof value === 'string' && value.length > 0) {
+                          insights.push({ key, value });
+                        }
+                      }
+                    }
+
+                    // Map insight keys to nice labels and icons
+                    const insightMeta = (key) => {
+                      const k = key.toLowerCase();
+                      if (k.includes('mentor') || k.includes('guidance') || k.includes('note'))
+                        return { icon: '🎓', label: 'Mentor Guidance', cls: 'mentor-card' };
+                      if (k.includes('trend') || k.includes('industry'))
+                        return { icon: '📈', label: 'Industry Trends', cls: 'trends-card' };
+                      if (k.includes('suggest') || k.includes('advice') || k.includes('tip'))
+                        return { icon: '💡', label: 'Suggestions', cls: 'suggestion-card' };
+                      return { icon: '📝', label: key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()), cls: 'generic-card' };
+                    };
+
+                    if (recs.length > 0) {
+                      return (
+                        <div>
+                          <p className="mb-4 text-sm opacity-90">
+                            The AI found {recs.length} curated internship recommendations for you:
+                          </p>
+                          <div className="ai-recommendation-grid">
+                            {recs.map((rec, index) => (
+                              <div key={index} className="ai-recommendation-card">
+                                <div className="ai-rec-header">
+                                  <span className="ai-rec-rank">#{index + 1}</span>
+                                  <h4 className="ai-rec-title">{rec.position || rec.role || rec.title}</h4>
+                                </div>
+                                {rec.company && (
+                                  <p className="ai-rec-company">🏢 {rec.company}</p>
+                                )}
+                                {rec.location && (
+                                  <p className="ai-rec-detail">📍 {rec.location}</p>
+                                )}
+                                {rec.stipend && (
+                                  <p className="ai-rec-detail">💰 {rec.stipend}</p>
+                                )}
+                                {rec.reason && (
+                                  <div className="ai-rec-reason">
+                                    <span className="font-medium text-xs">Why this match:</span>
+                                    <p className="text-xs mt-1">{rec.reason}</p>
+                                  </div>
+                                )}
+                                {rec.match_score && (
+                                  <div className="ai-rec-score">
+                                    <span className="text-xs text-gray-500">AI Score:</span>
+                                    <span className="text-xs font-bold text-purple-600">
+                                      {typeof rec.match_score === 'number' 
+                                        ? `${Math.round(rec.match_score * 100)}%` 
+                                        : rec.match_score}
+                                    </span>
+                                  </div>
+                                )}
                               </div>
-                            )}
-                            {rec.match_score && (
-                              <div className="ai-rec-score">
-                                <span className="text-xs text-gray-500">AI Score:</span>
-                                <span className="text-xs font-bold text-purple-600">
-                                  {typeof rec.match_score === 'number' 
-                                    ? `${Math.round(rec.match_score * 100)}%` 
-                                    : rec.match_score}
-                                </span>
-                              </div>
-                            )}
+                            ))}
                           </div>
-                        ))}
+
+                          {/* Dynamic insight cards */}
+                          {insights.map(({ key, value }) => {
+                            const meta = insightMeta(key);
+                            return (
+                              <div key={key} className={`ai-insight-card ${meta.cls} mt-4`}>
+                                <div className="ai-insight-header">
+                                  <span className="text-xl">{meta.icon}</span>
+                                  <h4 className="font-semibold">{meta.label}</h4>
+                                </div>
+                                <p className="ai-insight-text">{value}</p>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div className="bg-white rounded-lg p-4 border border-green-100 mt-4">
+                        <h4 className="font-medium text-gray-800 mb-2">AI Response:</h4>
+                        <pre className="text-xs text-gray-600 whitespace-pre-wrap overflow-auto max-h-64">
+                          {JSON.stringify(data, null, 2)}
+                        </pre>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="bg-white rounded-lg p-4 border border-green-100 mt-4">
-                      <h4 className="font-medium text-gray-800 mb-2">AI Response:</h4>
-                      <pre className="text-xs text-gray-600 whitespace-pre-wrap overflow-auto max-h-64">
-                        {JSON.stringify(result.result || result, null, 2)}
-                      </pre>
-                    </div>
-                  )}
+                    );
+                  })()}
                 </div>
               )}
             </div>

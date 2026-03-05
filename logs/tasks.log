@@ -1,0 +1,6 @@
+[2026-03-05 20:33:12] INFO [app.tasks:15] Starting embedding generation for resume_id=11146419-8fb9-49c9-9b5a-0e68bb9e7fc3
+[2026-03-05 20:33:13] INFO [app.tasks:31] Text extracted (2597 chars), generating embedding...
+[2026-03-05 20:33:18] INFO [app.tasks:40] Embedding completed for resume_id=11146419-8fb9-49c9-9b5a-0e68bb9e7fc3
+[2026-03-05 20:33:20] INFO [app.tasks:15] Starting embedding generation for resume_id=17bee245-2724-40c1-8fe4-5f5aa9aa09c7
+[2026-03-05 20:33:20] INFO [app.tasks:31] Text extracted (2597 chars), generating embedding...
+[2026-03-05 20:33:25] INFO [app.tasks:40] Embedding completed for resume_id=17bee245-2724-40c1-8fe4-5f5aa9aa09c7

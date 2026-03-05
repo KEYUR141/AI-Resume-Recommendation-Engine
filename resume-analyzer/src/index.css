@@ -1498,6 +1498,92 @@ html.dark .ai-rec-reason {
 html.light .ai-rec-score { border-color: #e5e7eb; }
 html.dark .ai-rec-score { border-color: #374151; }
 
+/* ─── AI Insight Cards (Mentor Guidance / Industry Trends) ────────── */
+.ai-insight-card {
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  border-left: 4px solid;
+}
+
+.ai-insight-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.ai-insight-header h4 {
+  font-size: 1rem;
+}
+
+html.light .ai-insight-header h4 { color: #111827; }
+html.dark .ai-insight-header h4 { color: #f3f4f6; }
+
+.ai-insight-text {
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+/* Mentor card */
+html.light .mentor-card {
+  background-color: #f0fdf4;
+  border-left-color: #22c55e;
+}
+
+html.light .mentor-card .ai-insight-text { color: #374151; }
+
+html.dark .mentor-card {
+  background-color: #052e16;
+  border-left-color: #22c55e;
+}
+
+html.dark .mentor-card .ai-insight-text { color: #d1d5db; }
+
+/* Trends card */
+html.light .trends-card {
+  background-color: #fffbeb;
+  border-left-color: #f59e0b;
+}
+
+html.light .trends-card .ai-insight-text { color: #374151; }
+
+html.dark .trends-card {
+  background-color: #451a03;
+  border-left-color: #f59e0b;
+}
+
+html.dark .trends-card .ai-insight-text { color: #d1d5db; }
+
+/* Suggestion card */
+html.light .suggestion-card {
+  background-color: #eff6ff;
+  border-left-color: #3b82f6;
+}
+
+html.light .suggestion-card .ai-insight-text { color: #374151; }
+
+html.dark .suggestion-card {
+  background-color: #1e3a5f;
+  border-left-color: #3b82f6;
+}
+
+html.dark .suggestion-card .ai-insight-text { color: #d1d5db; }
+
+/* Generic insight card */
+html.light .generic-card {
+  background-color: #f5f3ff;
+  border-left-color: #8b5cf6;
+}
+
+html.light .generic-card .ai-insight-text { color: #374151; }
+
+html.dark .generic-card {
+  background-color: #1a1033;
+  border-left-color: #8b5cf6;
+}
+
+html.dark .generic-card .ai-insight-text { color: #d1d5db; }
+
 /* ─── Mobile responsive for new components ────────────────────────── */
 @media (max-width: 640px) {
   .resume-list-item {
