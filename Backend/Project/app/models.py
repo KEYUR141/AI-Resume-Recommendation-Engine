@@ -21,8 +21,7 @@ class UserProfile(BaseModel):
     
     user = models.OneToOneField(User,on_delete=models.CASCADE)
     role = models.CharField(max_length=20,choices=role_choices,default='admin')
-    profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)  # <-- added field
-
+    
     def __str__(self):
         return f"{self.uuid} - {self.user.username} - {self.role}"
     

@@ -10,9 +10,9 @@ from app.RAG.faiss_manager import faiss_manager
 
 API_KEY_GROQ = os.getenv('API_KEY_GROQ')
 #load embedded data
-faiss_index = faiss.read_index(r'D:\Django_Python_Practice\SIH_Hackathon\Backend\Project\app\RAG\faiss_index.bin')
+faiss_index = faiss.read_index(r'D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\app\RAG\faiss_index.bin')
 
-with open(r'D:\Django_Python_Practice\SIH_Hackathon\Backend\Project\app\RAG\metadata.json', 'r') as f:
+with open(r'D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\app\RAG\metadata.json', 'r') as f:
     metadata = json.load(f)
 
 
@@ -115,7 +115,7 @@ def recommend_internships_by_llm(unique_matched_internships):
         )   
 
         print("[DEBUG] Raw LLM result object:")
-        print("LLM Recommendation Result:", result.choices[0].message.content)
+        return result
         
     except Exception as e:
         return f"Error in recommendation engine: {str(e)}"

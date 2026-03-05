@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { fetchInternships } from '../api';
 import { useTheme } from '../contexts/ThemeContext';
+import InternshipModal from './InternshipModal';
 
 const InternshipList = () => {
   const [internships, setInternships] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedInternship, setSelectedInternship] = useState(null);
   const { isDark } = useTheme();
 
   useEffect(() => {
@@ -83,7 +85,7 @@ const InternshipList = () => {
               </div>
               
               <div className="mt-4 pt-4 border-t border-gray-100">
-                <button className="btn-primary">
+                <button className="btn-primary" onClick={() => setSelectedInternship(intern)}>
                   View Details
                 </button>
               </div>
@@ -96,20 +98,16 @@ const InternshipList = () => {
           )}
         </div>
       </div>
+
+      {/* Internship Detail Modal */}
+      {selectedInternship && (
+        <InternshipModal
+          internship={selectedInternship}
+          onClose={() => setSelectedInternship(null)}
+        />
+      )}
     </div>
   );
 }
-
-// Example: Add this function inside the InternshipList component if you want to fetch details on click
-// import { fetchInternshipDetail } from '../api';
-// async function handleDetail(uuid) {
-//   try {
-//     const detail = await fetchInternshipDetail(uuid);
-//     // Do something with detail (e.g., show modal, set state, etc.)
-//     console.log(detail);
-//   } catch (err) {
-//     alert('Failed to fetch internship details');
-//   }
-// }
 
 export default InternshipList;

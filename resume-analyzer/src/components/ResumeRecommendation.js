@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { uploadResume } from '../api';
 import { useTheme } from '../contexts/ThemeContext';
 
-const ResumeRecommendation = ({ onRecommend }) => {
+const ResumeRecommendation = () => {
   const [file, setFile] = useState(null);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -23,9 +23,8 @@ const ResumeRecommendation = ({ onRecommend }) => {
     try {
       const data = await uploadResume(formData);
       setResult(data);
-      if (onRecommend) onRecommend(data);
     } catch (err) {
-      setResult({ error: 'Failed to get recommendation.' });
+      setResult({ error: 'Failed to get recommendations. Please try again.' });
     }
     setLoading(false);
   };
@@ -34,8 +33,8 @@ const ResumeRecommendation = ({ onRecommend }) => {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Resume Analysis & Recommendations</h2>
-          <p className="text-gray-600">Upload your resume to get personalized internship matches powered by AI</p>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">🔍 Quick Resume Search</h2>
+          <p className="text-gray-600">Upload your resume for instant keyword-based internship matching</p>
         </div>
         
         <div className="internship-card max-w-3xl mx-auto">
@@ -47,14 +46,14 @@ const ResumeRecommendation = ({ onRecommend }) => {
               
               <div className="file-input">
                 <input 
-                  id="resume-upload"
+                  id="resume-search-upload"
                   type="file" 
                   accept=".pdf,.doc,.docx" 
                   onChange={handleFileChange}
                   disabled={loading}
                 />
                 <label 
-                  htmlFor="resume-upload" 
+                  htmlFor="resume-search-upload" 
                   className={`file-input-label ${file ? 'has-file' : ''}`}
                 >
                   {file ? (
@@ -77,8 +76,8 @@ const ResumeRecommendation = ({ onRecommend }) => {
             {loading && (
               <div className="progress-container">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-gray-700">Analyzing resume...</span>
-                  <span className="text-sm text-gray-500">🤖 AI Processing</span>
+                  <span className="text-sm font-medium text-gray-700">Matching skills...</span>
+                  <span className="text-sm text-gray-500">⚡ Keyword Matching</span>
                 </div>
                 <div className="progress-bar">
                   <div className="progress-fill" style={{width: '70%'}}></div>
@@ -94,11 +93,11 @@ const ResumeRecommendation = ({ onRecommend }) => {
               {loading ? (
                 <>
                   <div className="spinner animate-spin mr-3" style={{width: '1.5rem', height: '1.5rem'}}></div>
-                  Analyzing Your Resume...
+                  Searching Matches...
                 </>
               ) : (
                 <>
-                  🎯 Get AI Recommendations
+                  🔍 Find Matching Internships
                 </>
               )}
             </button>
@@ -110,7 +109,7 @@ const ResumeRecommendation = ({ onRecommend }) => {
                 <div className="error-card">
                   <div className="flex items-center mb-3">
                     <div className="text-2xl mr-3">❌</div>
-                    <h3 className="text-lg font-semibold">Analysis Failed</h3>
+                    <h3 className="text-lg font-semibold">Search Failed</h3>
                   </div>
                   <p className="text-sm">{result.error}</p>
                 </div>
@@ -118,13 +117,13 @@ const ResumeRecommendation = ({ onRecommend }) => {
                 <div className="success-card">
                   <div className="flex items-center mb-4">
                     <div className="text-2xl mr-3">🎉</div>
-                    <h3 className="text-xl font-semibold">Analysis Complete!</h3>
+                    <h3 className="text-xl font-semibold">Matches Found!</h3>
                   </div>
                   
                   {result.recommendations && result.recommendations.length > 0 ? (
                     <div>
                       <p className="mb-4 text-sm opacity-90">
-                        Found {result.recommendations.length} matching internships based on your skills and experience:
+                        Found {result.recommendations.length} matching internships based on your skills:
                       </p>
                       <div className="recommendation-grid">
                         {result.recommendations.slice(0, 6).map((rec, index) => (
@@ -143,7 +142,7 @@ const ResumeRecommendation = ({ onRecommend }) => {
                     </div>
                   ) : (
                     <div className="bg-white rounded-lg p-4 border border-green-100 mt-4">
-                      <h4 className="font-medium text-gray-800 mb-2">Raw Response:</h4>
+                      <h4 className="font-medium text-gray-800 mb-2">Response:</h4>
                       <pre className="text-xs text-gray-600 whitespace-pre-wrap overflow-auto max-h-64">
                         {JSON.stringify(result, null, 2)}
                       </pre>
@@ -155,23 +154,14 @@ const ResumeRecommendation = ({ onRecommend }) => {
           )}
         </div>
         
-        {/* Features section */}
-        <div className="mt-12 grid md:grid-cols-3 gap-6">
-          <div className="text-center internship-card">
-            <div className="text-3xl mb-3">🤖</div>
-            <h3 className="font-semibold text-gray-900 mb-2">AI-Powered Analysis</h3>
-            <p className="text-sm text-gray-600">Advanced machine learning algorithms analyze your resume for the best matches</p>
-          </div>
-          <div className="text-center internship-card">
-            <div className="text-3xl mb-3">⚡</div>
-            <h3 className="font-semibold text-gray-900 mb-2">Instant Results</h3>
-            <p className="text-sm text-gray-600">Get personalized internship recommendations in seconds, not hours</p>
-          </div>
-          <div className="text-center internship-card">
-            <div className="text-3xl mb-3">🎯</div>
-            <h3 className="font-semibold text-gray-900 mb-2">Perfect Matches</h3>
-            <p className="text-sm text-gray-600">Find internships that align perfectly with your skills and career goals</p>
-          </div>
+        {/* Info section */}
+        <div className="feature-info-banner mt-8">
+          <div className="text-2xl mb-2">⚡</div>
+          <h3 className="font-semibold text-gray-900 mb-1">How Quick Search Works</h3>
+          <p className="text-sm text-gray-600">
+            Your resume is parsed for keywords like skills, qualifications, and experience. 
+            These are matched against internship listings using a fast keyword-based algorithm for instant results.
+          </p>
         </div>
       </div>
     </div>

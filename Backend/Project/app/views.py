@@ -1,3 +1,5 @@
+import logging
+import json
 from django.shortcuts import render
 from .models import Internship, UserProfile, Resume
 from django.http import JsonResponse
@@ -15,6 +17,8 @@ from .serializers import InternshipSerializer, UserSerializer, UserProfileSerial
 from django.contrib.auth.models import User
 from rest_framework.parsers import MultiPartParser, FormParser
 
+logger = logging.getLogger('app')
+
 class AuthViewSet(viewsets.ViewSet):
     """
     ViewSet for user registration and login with error handling.
@@ -24,20 +28,24 @@ class AuthViewSet(viewsets.ViewSet):
     def get_user(self, request):
         try:
             user = request.user
+            logger.info("get_user called by user=%s", user)
             if user.is_authenticated:
                 user_profile = UserProfile.objects.all()
                 serializer = UserProfileSerializer(user_profile, many=True)
+                logger.debug("Returning %d user profiles", len(serializer.data))
                 return Response({
                     "Status": True,
                     "Method":"Get",
                     "Data": serializer.data
                 })
+            logger.warning("Unauthenticated access attempt to get_user")
             return Response({
                 "Status": False,
                 "Method":"Get",
                 "Data": "User not authenticated"
             })
         except Exception as e:
+            logger.error("get_user failed: %s", e, exc_info=True)
             return Response({
                 "Status": False,
                 "Method":"Get",
@@ -47,9 +55,11 @@ class AuthViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['post'])
     def register(self, request):
         try:
+            logger.info("Registration attempt for username=%s", request.data.get('username', '?'))
             serializer = UserSerializer(data=request.data)
             if serializer.is_valid():
                 user = serializer.save()
+                logger.info("User registered successfully: %s (id=%s)", user.username, user.pk)
 
                 # Generate JWT token for newly registered user
                 refresh = RefreshToken.for_user(user)
@@ -60,9 +70,11 @@ class AuthViewSet(viewsets.ViewSet):
                     "access": str(refresh.access_token),
                 }, status=status.HTTP_201_CREATED)
 
+            logger.warning("Registration validation failed: %s", serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         except Exception as e:
+            logger.error("Registration failed: %s", e, exc_info=True)
             return Response({
                 "error": "Registration failed",
                 "details": str(e)
@@ -73,13 +85,16 @@ class AuthViewSet(viewsets.ViewSet):
         try:
             username = request.data.get("username")
             password = request.data.get("password")
+            logger.info("Login attempt for username=%s", username)
 
             if not username or not password:
+                logger.warning("Login attempt with missing credentials")
                 return Response({"error": "Username and password are required"},
                                 status=status.HTTP_400_BAD_REQUEST)
 
             user = authenticate(username=username, password=password)
             if user is not None:
+                logger.info("Login successful for user=%s", username)
                 refresh = RefreshToken.for_user(user)
                 return Response({
                     "message": "Login successful",
@@ -88,9 +103,11 @@ class AuthViewSet(viewsets.ViewSet):
                     "access": str(refresh.access_token),
                 }, status=status.HTTP_200_OK)
 
+            logger.warning("Invalid login credentials for username=%s", username)
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
         except Exception as e:
+            logger.error("Login failed: %s", e, exc_info=True)
             return Response({
                 "error": "Login failed",
                 "details": str(e)
@@ -107,14 +124,17 @@ class InternshipViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def get_internships(self, request):
         try:
+            logger.info("Fetching all internships")
             internships = self.queryset
             serializer = self.serializer_class(internships, many=True)
+            logger.debug("Returning %d internships", len(serializer.data))
             return Response({
                 'status': True,
                 'Method': request.method,
                 'data': serializer.data
             })
         except Exception as e:
+            logger.error("get_internships failed: %s", e, exc_info=True)
             return Response({
                 'status': False,
                 'Method': request.method,
@@ -141,6 +161,7 @@ class InternshipViewSet(viewsets.ModelViewSet):
         source = None
         resume_file = request.FILES.get('resume')
         if resume_file:
+            logger.info("Recommend: processing uploaded resume file=%s", resume_file.name)
             import tempfile
             with tempfile.NamedTemporaryFile(delete=False, suffix=resume_file.name[-5:]) as tmp:
                 for chunk in resume_file.chunks():
@@ -151,7 +172,9 @@ class InternshipViewSet(viewsets.ModelViewSet):
                 candidate_skills = parse_skills(resume_text)
                 candidate_qualifications = parse_skills(resume_text)
                 source = 'resume_file'
+                logger.info("Extracted %d skills from resume", len(candidate_skills))
             except Exception as e:
+                logger.error("Resume extraction failed: %s", e, exc_info=True)
                 return Response({'status': False, 'error': f'Resume extraction failed: {str(e)}'}, status=500)
         else:
             skills_text = request.data.get('skills', '')
@@ -169,21 +192,27 @@ class InternshipViewSet(viewsets.ModelViewSet):
             'recommendations': recommendations
         })
     
+    @action(detail=False, methods = ['POST'], url_path="recommend_by_llm")
     def recommend_internships_by_llm(self, request):
         try:
+            logger.info("LLM-based internship recommendation requested")
             from app.RAG.recommender import recommend_internships_by_llm, recommend_internships_engine
             unique_matched_internships = recommend_internships_engine(request.data.get('resume_text', ''))
             if not unique_matched_internships:
+                logger.warning("No matched internships found for LLM recommendation")
                 return Response({
                     'status': False,
                     'error': 'No matched internships to provide to LLM for recommendation.'
                 }, status=400)
             result = recommend_internships_by_llm(unique_matched_internships)
+            format_result = json.loads(result.choices[0].message.content)
+            logger.info("LLM recommendation returned successfully")
             return Response({
                 'status': True,
-                'result': result
+                'result': format_result
             })
         except Exception as e:
+            logger.error("LLM recommendation failed: %s", e, exc_info=True)
             return Response({
                 'status': False,
                 'error': f'Error in recommendation engine: {str(e)}'
@@ -200,8 +229,10 @@ class ResumeViewSet(viewsets.ModelViewSet):
     def upload_resume(self, request):
         try:
             resume_file = request.FILES.get('resume')
+            logger.info("Resume upload requested by user=%s", request.user)
 
             if not resume_file:
+                logger.warning("Resume upload: no file provided by user=%s", request.user)
                 return Response({
                     'status': False,
                     'error': 'No Resume File Provided',
@@ -210,6 +241,7 @@ class ResumeViewSet(viewsets.ModelViewSet):
                     files=resume_file, 
                     status='pending')
             
+            logger.info("Resume created (uuid=%s), dispatching embedding task", resume.uuid)
             generate_resume_embedding.delay(str(resume.uuid))
             return Response({
                 'status': True,
@@ -217,6 +249,7 @@ class ResumeViewSet(viewsets.ModelViewSet):
                 'resume_id': str(resume.uuid)
             }, status=status.HTTP_201_CREATED)      
         except Exception as e:
+            logger.error("Resume upload failed for user=%s: %s", request.user, e, exc_info=True)
             return Response({
                 'status': False,
                 'error' : f'Error Uploading Resume: {str(e)}'
@@ -225,7 +258,9 @@ class ResumeViewSet(viewsets.ModelViewSet):
     @action(detail = False, methods = ['GET'], url_path = 'my_resumes')
     def get_my_resumes(self,request):
         try:
+            logger.info("Fetching resumes for user=%s", request.user)
             resumes = self.queryset.filter(user = request.user)
+            logger.debug("Found %d resumes for user=%s", resumes.count(), request.user)
             return Response({
                 'status': True,
                 'resumes': [
@@ -238,6 +273,7 @@ class ResumeViewSet(viewsets.ModelViewSet):
                 ]
             })
         except Exception as e:
+            logger.error("Fetching resumes failed for user=%s: %s", request.user, e, exc_info=True)
             return Response({
                 'status': False,
                 'error': f'Error Fetching Resumes: {str(e)}'

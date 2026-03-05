@@ -1,0 +1,11 @@
+[2026-03-05 14:40:25] ERROR [app:177] Resume extraction failed: No module named 'pdfminer'
+Traceback (most recent call last):
+  File "D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-engine\Backend\Project\app\views.py", line 171, in recommend
+    resume_text = extract_resume_text(tmp_path)
+  File "D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-engine\Backend\Project\app\utils\light_model.py", line 10, in extract_resume_text
+    return extract_text_from_pdf(file_path)
+  File "D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-engine\Backend\Project\app\utils\resume_extractor.py", line 2, in extract_text_from_pdf
+    from pdfminer.high_level import extract_text
+ModuleNotFoundError: No module named 'pdfminer'
+[2026-03-05 14:40:25] ERROR [django.request:249] Internal Server Error: /api/internships/recommend/
+[2026-03-05 14:40:25] ERROR [django.server:249] "POST /api/internships/recommend/ HTTP/1.1" 500 79

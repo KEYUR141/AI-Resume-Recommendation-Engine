@@ -3,12 +3,35 @@ import './App.css';
 import React, { useState } from 'react';
 import InternshipList from './components/InternshipList';
 import ResumeRecommendation from './components/ResumeRecommendation';
+import ResumeUpload from './components/ResumeUpload';
+import AIRecommendation from './components/AIRecommendation';
+import LoginPage from './components/LoginPage';
+import SignupPage from './components/SignupPage';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 function AppContent() {
   const [page, setPage] = useState('list');
+  const [authPage, setAuthPage] = useState('login'); // 'login' or 'signup'
   const [menuOpen, setMenuOpen] = useState(false);
   const { isDark, toggleTheme } = useTheme();
+  const { user, isAuthenticated, loading, logout } = useAuth();
+
+  // Show loading spinner while checking auth state on mount
+  if (loading) {
+    return (
+      <div className="auth-page">
+        <div className="spinner animate-spin" style={{ width: '3rem', height: '3rem' }}></div>
+      </div>
+    );
+  }
+
+  // If not authenticated, show login/signup
+  if (!isAuthenticated) {
+    return authPage === 'login'
+      ? <LoginPage onSwitch={() => setAuthPage('signup')} />
+      : <SignupPage onSwitch={() => setAuthPage('login')} />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -28,11 +51,31 @@ function AppContent() {
                 📋 Internships
               </button>
               <button 
-                onClick={() => { setPage('recommend'); setMenuOpen(false); }}
-                className={`nav-btn ${page === 'recommend' ? 'active' : ''}`}
+                onClick={() => { setPage('search'); setMenuOpen(false); }}
+                className={`nav-btn ${page === 'search' ? 'active' : ''}`}
               >
-                🎯 Resume Match
+                🔍 Quick Search
               </button>
+              <button 
+                onClick={() => { setPage('upload'); setMenuOpen(false); }}
+                className={`nav-btn ${page === 'upload' ? 'active' : ''}`}
+              >
+                📤 Upload Resume
+              </button>
+              <button 
+                onClick={() => { setPage('ai'); setMenuOpen(false); }}
+                className={`nav-btn ${page === 'ai' ? 'active' : ''}`}
+              >
+                🤖 AI Recommend
+              </button>
+
+              {/* User Info & Logout */}
+              <div className="nav-user">
+                <span className="nav-user-name">👤 {user?.username || user?.first_name || 'User'}</span>
+                <button onClick={logout} className="nav-btn nav-logout-btn">
+                  Logout
+                </button>
+              </div>
               
               {/* Theme Toggle */}
               <button
@@ -56,7 +99,9 @@ function AppContent() {
       
       <main>
         {page === 'list' && <InternshipList />}
-        {page === 'recommend' && <ResumeRecommendation />}
+        {page === 'search' && <ResumeRecommendation />}
+        {page === 'upload' && <ResumeUpload />}
+        {page === 'ai' && <AIRecommendation />}
       </main>
     </div>
   );
@@ -65,7 +110,9 @@ function AppContent() {
 function App() {
   return (
     <ThemeProvider>
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </ThemeProvider>
   );
 }

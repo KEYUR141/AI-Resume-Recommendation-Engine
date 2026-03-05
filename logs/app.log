@@ -1,0 +1,113 @@
+[2026-03-05 14:38:09] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 14:39:21] INFO [django.utils.autoreload:265] D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\app\tasks.py changed, reloading.
+[2026-03-05 14:39:22] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 14:40:10] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 14:40:17] INFO [app:127] Fetching all internships
+[2026-03-05 14:40:17] INFO [app:127] Fetching all internships
+[2026-03-05 14:40:17] INFO [django.server:249] "GET /api/internships/get_internships/ HTTP/1.1" 200 1697611
+[2026-03-05 14:40:17] INFO [django.server:249] "GET /api/internships/get_internships/ HTTP/1.1" 200 1697611
+[2026-03-05 14:40:25] INFO [app:164] Recommend: processing uploaded resume file=Keyur_FEB_2025_RESUME.pdf
+[2026-03-05 14:40:25] ERROR [app:177] Resume extraction failed: No module named 'pdfminer'
+Traceback (most recent call last):
+  File "D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-engine\Backend\Project\app\views.py", line 171, in recommend
+    resume_text = extract_resume_text(tmp_path)
+  File "D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-engine\Backend\Project\app\utils\light_model.py", line 10, in extract_resume_text
+    return extract_text_from_pdf(file_path)
+  File "D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-engine\Backend\Project\app\utils\resume_extractor.py", line 2, in extract_text_from_pdf
+    from pdfminer.high_level import extract_text
+ModuleNotFoundError: No module named 'pdfminer'
+[2026-03-05 14:40:25] ERROR [django.server:249] "POST /api/internships/recommend/ HTTP/1.1" 500 79
+[2026-03-05 14:46:11] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 14:46:21] INFO [app:127] Fetching all internships
+[2026-03-05 14:46:21] INFO [django.server:249] "GET /api/internships/get_internships/ HTTP/1.1" 200 1697611
+[2026-03-05 14:46:21] INFO [app:127] Fetching all internships
+[2026-03-05 14:46:21] INFO [django.server:249] "GET /api/internships/get_internships/ HTTP/1.1" 200 1697611
+[2026-03-05 14:46:31] INFO [app:164] Recommend: processing uploaded resume file=Keyur_FEB_2025_RESUME.pdf
+[2026-03-05 14:46:31] INFO [app:175] Extracted 209 skills from resume
+[2026-03-05 14:46:31] INFO [django.server:249] "POST /api/internships/recommend/ HTTP/1.1" 200 35237
+[2026-03-05 14:46:43] INFO [app:127] Fetching all internships
+[2026-03-05 14:46:43] INFO [django.server:249] "GET /api/internships/get_internships/ HTTP/1.1" 200 1697611
+[2026-03-05 14:46:43] INFO [app:127] Fetching all internships
+[2026-03-05 14:46:43] INFO [django.server:249] "GET /api/internships/get_internships/ HTTP/1.1" 200 1697611
+[2026-03-05 14:47:01] INFO [app:164] Recommend: processing uploaded resume file=Keyur_FEB_2025_RESUME.pdf
+[2026-03-05 14:47:01] INFO [app:175] Extracted 209 skills from resume
+[2026-03-05 14:47:01] INFO [django.server:249] "POST /api/internships/recommend/ HTTP/1.1" 200 35237
+[2026-03-05 14:51:28] INFO [app:127] Fetching all internships
+[2026-03-05 14:51:28] INFO [django.server:249] "GET /api/internships/get_internships/ HTTP/1.1" 200 1697611
+[2026-03-05 14:51:28] INFO [app:127] Fetching all internships
+[2026-03-05 14:51:28] INFO [django.server:249] "GET /api/internships/get_internships/ HTTP/1.1" 200 1697611
+[2026-03-05 14:54:23] INFO [django.utils.autoreload:265] D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\Project\settings.py changed, reloading.
+[2026-03-05 14:54:25] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 14:55:09] INFO [django.utils.autoreload:265] D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\app\models.py changed, reloading.
+[2026-03-05 14:55:11] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 14:55:13] INFO [django.utils.autoreload:265] D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\app\models.py changed, reloading.
+[2026-03-05 14:55:13] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 14:55:20] INFO [django.utils.autoreload:265] D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\app\models.py changed, reloading.
+[2026-03-05 14:55:20] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 14:57:13] INFO [django.utils.autoreload:265] D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\app\models.py changed, reloading.
+[2026-03-05 14:57:14] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 14:57:26] INFO [django.utils.autoreload:265] D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\app\models.py changed, reloading.
+[2026-03-05 14:57:27] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 14:57:30] INFO [django.utils.autoreload:265] D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\app\models.py changed, reloading.
+[2026-03-05 14:57:30] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 14:57:38] INFO [django.utils.autoreload:265] D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\app\models.py changed, reloading.
+[2026-03-05 14:57:39] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 15:05:21] INFO [django.server:249] "OPTIONS /api/auth/register/ HTTP/1.1" 200 0
+[2026-03-05 15:05:21] INFO [app:58] Registration attempt for username=winty
+[2026-03-05 15:05:21] WARNING [app:73] Registration validation failed: {'username': [ErrorDetail(string='A user with that username already exists.', code='unique')]}
+[2026-03-05 15:05:22] WARNING [django.server:249] "POST /api/auth/register/ HTTP/1.1" 400 58
+[2026-03-05 15:05:25] INFO [app:58] Registration attempt for username=WINTY
+[2026-03-05 15:05:26] INFO [app:62] User registered successfully: WINTY (id=2)
+[2026-03-05 15:05:26] INFO [django.server:249] "POST /api/auth/register/ HTTP/1.1" 201 629
+[2026-03-05 15:05:26] INFO [app:127] Fetching all internships
+[2026-03-05 15:05:27] INFO [django.server:249] "GET /api/internships/get_internships/ HTTP/1.1" 200 1697611
+[2026-03-05 15:05:27] INFO [app:127] Fetching all internships
+[2026-03-05 15:05:27] INFO [django.server:249] "GET /api/internships/get_internships/ HTTP/1.1" 200 1697611
+[2026-03-05 15:05:37] INFO [django.server:249] "OPTIONS /api/auth/login/ HTTP/1.1" 200 0
+[2026-03-05 15:05:37] INFO [app:88] Login attempt for username=winty
+[2026-03-05 15:05:38] WARNING [app:106] Invalid login credentials for username=winty
+[2026-03-05 15:05:38] WARNING [django.server:249] "POST /api/auth/login/ HTTP/1.1" 401 31
+[2026-03-05 15:05:43] INFO [app:88] Login attempt for username=winty
+[2026-03-05 15:05:44] WARNING [app:106] Invalid login credentials for username=winty
+[2026-03-05 15:05:44] WARNING [django.server:249] "POST /api/auth/login/ HTTP/1.1" 401 31
+[2026-03-05 15:05:55] INFO [app:88] Login attempt for username=winty
+[2026-03-05 15:05:56] INFO [app:97] Login successful for user=winty
+[2026-03-05 15:05:56] INFO [django.server:249] "POST /api/auth/login/ HTTP/1.1" 200 595
+[2026-03-05 15:05:56] INFO [app:127] Fetching all internships
+[2026-03-05 15:05:56] INFO [django.server:249] "GET /api/internships/get_internships/ HTTP/1.1" 200 1697611
+[2026-03-05 15:05:56] INFO [app:127] Fetching all internships
+[2026-03-05 15:05:56] INFO [django.server:249] "GET /api/internships/get_internships/ HTTP/1.1" 200 1697611
+[2026-03-05 15:08:00] INFO [app:164] Recommend: processing uploaded resume file=Keyur_FEB_2025_RESUME.pdf
+[2026-03-05 15:08:00] INFO [app:175] Extracted 209 skills from resume
+[2026-03-05 15:08:00] INFO [django.server:249] "POST /api/internships/recommend/ HTTP/1.1" 200 35237
+[2026-03-05 15:13:01] INFO [django.utils.autoreload:265] D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\app\views.py changed, reloading.
+[2026-03-05 15:13:03] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 15:13:13] INFO [django.utils.autoreload:265] D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\app\views.py changed, reloading.
+[2026-03-05 15:13:15] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 15:16:08] INFO [django.utils.autoreload:265] D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\app\views.py changed, reloading.
+[2026-03-05 15:16:09] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 15:17:39] INFO [django.utils.autoreload:265] D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\app\views.py changed, reloading.
+[2026-03-05 15:17:40] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 15:17:45] INFO [django.utils.autoreload:265] D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\app\views.py changed, reloading.
+[2026-03-05 15:17:46] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 15:17:57] INFO [django.utils.autoreload:265] D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\app\views.py changed, reloading.
+[2026-03-05 15:17:58] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 15:18:15] INFO [django.utils.autoreload:265] D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\app\views.py changed, reloading.
+[2026-03-05 15:18:17] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 15:18:29] INFO [django.utils.autoreload:265] D:\Django_Python_Practice\Project_AI_Resume\AI-Resume-Recommendation-Engine\Backend\Project\app\views.py changed, reloading.
+[2026-03-05 15:18:30] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 15:27:02] INFO [app:127] Fetching all internships
+[2026-03-05 15:27:03] INFO [app:127] Fetching all internships
+[2026-03-05 15:27:03] INFO [django.server:249] "GET /api/internships/get_internships/ HTTP/1.1" 200 1697611
+[2026-03-05 15:27:03] INFO [django.server:249] "GET /api/internships/get_internships/ HTTP/1.1" 200 1697611
+[2026-03-05 15:31:56] INFO [django.utils.autoreload:681] Watching for file changes with StatReloader
+[2026-03-05 15:32:05] INFO [django.server:249] "OPTIONS /api/auth/get_user/ HTTP/1.1" 200 0
+[2026-03-05 15:32:05] INFO [django.server:249] "OPTIONS /api/auth/get_user/ HTTP/1.1" 200 0
+[2026-03-05 15:32:05] INFO [app:31] get_user called by user=winty
+[2026-03-05 15:32:05] INFO [django.server:249] "GET /api/auth/get_user/ HTTP/1.1" 200 174
+[2026-03-05 15:32:05] INFO [app:31] get_user called by user=winty
+[2026-03-05 15:32:05] INFO [django.server:249] "GET /api/auth/get_user/ HTTP/1.1" 200 174
+[2026-03-05 15:32:05] INFO [app:127] Fetching all internships
+[2026-03-05 15:32:05] INFO [django.server:249] "GET /api/internships/get_internships/ HTTP/1.1" 200 1697611
+[2026-03-05 15:32:05] INFO [app:127] Fetching all internships
+[2026-03-05 15:32:05] INFO [django.server:249] "GET /api/internships/get_internships/ HTTP/1.1" 200 1697611
