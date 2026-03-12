@@ -1,0 +1,96 @@
+# Defines and runs all services together with one command: docker compose up
+
+services:
+
+  # ========== PostgreSQL Database ==========
+  # Official pre-built image — no Dockerfile needed
+  # Django connects here instead of a locally installed PostgreSQL
+  db:
+    image: postgres:16
+    restart: always                # Auto-restart if it crashes
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}             # These read from your .env file
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      # Named volume — Docker manages this storage on disk
+      # Persists your database data even if the container is deleted
+      # Without this, your data disappears on every restart!
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"    # host_port:container_port — access DB from your machine too
+
+  # ========== Redis (Message broker for Celery) ==========
+  # Celery uses Redis to queue tasks and store results
+  redis:
+    image: redis:7-alpine          # alpine = smallest Linux variant (~5MB)
+    restart: always
+    ports:
+      - "6379:6379"
+
+  # ========== Django Backend (API Server) ==========
+  # Built from your Dockerfile in Backend/Project/
+  backend:
+    build: ./Backend/Project       # Path to the Dockerfile
+    restart: always
+    env_file:
+      - .env                       # Loads ALL variables from .env
+    environment:
+      # These OVERRIDE the values in .env for Docker networking
+      # "db" and "redis" are service names above
+      # Docker creates an internal network where services find each other by name
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    volumes:
+      # Mount folders so data persists outside the container
+      - ./Backend/Project/resumes:/app/resumes
+      - ./logs:/app/logs
+    ports:
+      - "8001:8000"
+    depends_on:
+      # Start db and redis BEFORE backend
+      # Note: this only controls startup ORDER, not readiness
+      - db
+      - redis
+
+  # ========== Celery Worker ==========
+  # Same Docker image as backend, but runs celery instead of gunicorn
+  # Think of it as a second copy of your Django code that only processes background tasks
+  celery:
+    build: ./Backend/Project       # Same Dockerfile as backend
+    restart: always
+    # This OVERRIDES the CMD in the Dockerfile
+    # Instead of starting gunicorn, it starts the Celery worker
+    command: celery -A Project worker --loglevel=info --pool=solo
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    volumes:
+      - ./Backend/Project/resumes:/app/resumes
+      - ./logs:/app/logs
+    depends_on:
+      - db
+      - redis
+      - backend
+
+  # ========== React Frontend ==========
+  # Built from resume-analyzer/Dockerfile (multi-stage: Node build → Nginx serve)
+  frontend:
+    build: ./resume-analyzer
+    restart: always
+    ports:
+      - "80:80"                    # Accessible at http://localhost
+    depends_on:
+      - backend                    # Backend should be up before frontend proxies to it
+
+# ========== Named Volumes ==========
+# Docker manages where this is stored on disk
+# Survives "docker compose down" — only deleted with "docker compose down -v"
+volumes:
+  postgres_data:
